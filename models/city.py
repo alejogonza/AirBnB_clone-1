@@ -1,5 +1,7 @@
-#!/usr/bin/python3
-"""This is the city class"""
+#!/usr/bin/python
+"""
+Class City
+"""
 import models
 from models.base_model import BaseModel, Base
 from os import getenv

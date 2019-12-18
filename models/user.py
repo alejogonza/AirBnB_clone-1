@@ -1,5 +1,6 @@
-#!/usr/bin/python3
-"""This is the user class"""
+#!/usr/bin/python
+"""This is the User class
+"""
 import models
 from models.base_model import BaseModel, Base
 from os import getenv
@@ -25,5 +26,5 @@ class User(BaseModel, Base):
         last_name = ""
 
     def __init__(self, *args, **kwargs):
-        """Constructor for user"""
+        """Constructor"""
         super().__init__(*args, **kwargs)

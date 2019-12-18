@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""This is the state class"""
+""" holds class State"""
 import models
 from models.base_model import BaseModel, Base
 from models.city import City
@@ -19,14 +19,14 @@ class State(BaseModel, Base):
         name = ""
 
     def __init__(self, *args, **kwargs):
-        """Constructor for state"""
+        """Constructor"""
         super().__init__(*args, **kwargs)
 
     if models.storage_t != "db":
         @property
         def cities(self):
             """
-            getter data for city and state inst
+            getter data between city and state instance
             """
             city_list = []
             all_cities = models.storage.all(City)

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-initialize the models packages for func
+initialize the models package
 """
 
 from os import getenv

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-
-"""This is the base model class for AirBnB"""
+"""
+Class BaseModel
+"""
 
 from datetime import datetime, date, time
 import models

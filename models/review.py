@@ -1,5 +1,6 @@
-#!/usr/bin/python3
-"""This is the review class"""
+#!/usr/bin/python
+"""This is the place Review
+"""
 import models
 from models.base_model import BaseModel, Base
 from os import getenv

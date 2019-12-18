@@ -1,5 +1,7 @@
-#!/usr/bin/python3
-"""This is the amenity class"""
+#!/usr/bin/python
+"""
+Class Amenity
+"""
 import models
 from models.base_model import BaseModel, Base
 from os import getenv
