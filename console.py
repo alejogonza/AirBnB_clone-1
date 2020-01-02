@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """This is the console for AirBnB"""
 import cmd
+import re
+
 from models import storage
 from datetime import datetime
 from models.base_model import BaseModel
@@ -43,14 +45,27 @@ class HBNBCommand(cmd.Cmd):
                 raise SyntaxError()
             my_list = line.split(" ")
             obj = eval("{}()".format(my_list[0]))
-            for i in range(1, len(my_list)):
-                temporal_list = my_list[i].split("=")
-                if len(temporal_list) == 2:
-                    temporal_list[1] = temporal_list[1].replace('_', ' ')
-                    try:
-                        obj.__dict__[temporal_list[0]] = eval(temporal_list[1])
-                    except BaseException:
-                        obj.__dict__[temporal_list[0]] = temporal_list[1]
+            for pair in my_list[1:]:
+                pair = pair.split('=', 1)
+                if len(pair) == 1 or "" in pair:
+                    continue
+                match = re.search('^"(.*)"$', pair[1])
+                cast = str
+                if match:
+                    value = match.group(1)
+                    value = value.replace('_', ' ')
+                    value = re.sub(r'(?<!\\)"', r'\\"', value)
+                else:
+                    value = pair[1]
+                    if "." in value:
+                        cast = float
+                    else:
+                        cast = int
+                try:
+                    value = cast(value)
+                except ValueError:
+                    pass
+                setattr(obj, pair[0], value)
             obj.save()
             print("{}".format(obj.id))
         except SyntaxError:
@@ -126,21 +141,19 @@ class HBNBCommand(cmd.Cmd):
         Exceptions:
             NameError: when there is no object taht has the name
         """
-        objects = storage.all()
-        my_list = []
-        if not line:
+        try:
+            if line and line in self.all_classes:
+                objects = storage.all(eval(line))
+                args = line.split(" ")
+                if args[0] not in self.all_classes:
+                    raise NameError()
+            elif line is "":
+                objects = storage.all()
+            else:
+                raise NameError()
+            my_list = []
             for key in objects:
                 my_list.append(objects[key])
-            print(my_list)
-            return
-        try:
-            args = line.split(" ")
-            if args[0] not in self.all_classes:
-                raise NameError()
-            for key in objects:
-                name = key.split('.')
-                if name[0] == args[0]:
-                    my_list.append(objects[key])
             print(my_list)
         except NameError:
             print("** class doesn't exist **")
