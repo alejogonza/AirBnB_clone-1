@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" deploy script"""
+"""Script for deploy and prepare"""
 
 from fabric.api import *
 import os

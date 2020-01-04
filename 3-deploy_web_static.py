@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" script for deploy and serve"""
+"""Script for serve"""
 
 from fabric.api import *
 import os
