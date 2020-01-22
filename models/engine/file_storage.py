@@ -20,34 +20,20 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def delete(self, obj=None):
-        """delete object from __objects
-        Args:
-            obj: given object
-        """
-        if obj is None:
-            return
-        else:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            if key in self.__objects:
-                del self.__objects[key]
-                self.save()
-
     def all(self, cls=None):
         """returns a dictionary
-        Args:
-            cls: class type to filter return by
         Return:
             returns a dictionary of __object
         """
-        if cls is None:
-            return self.__objects
+        if cls is not None:
+            a = dict()
+            for key in self.__objects:
+                clas = key.split(".")
+                if clas[0] == cls.__name__:
+                    a[key] = self.__objects[key]
+            return a
         else:
-            nx = {}
-            for key, value in self.__objects.items():
-                if type(value) == cls:
-                    nx[key] = value
-            return nx
+            return self.__objects
 
     def new(self, obj):
         """sets __object to given obj
@@ -57,12 +43,6 @@ class FileStorage:
         if obj:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             self.__objects[key] = obj
-        else:
-            aux = {}
-            for key, value in self.__objects.items():
-                if isinstance(value, cls):
-                    aux[key] = value
-            return aux
 
     def save(self):
         """serialize the file path to JSON file path
@@ -84,7 +64,14 @@ class FileStorage:
         except FileNotFoundError:
             pass
 
+    def delete(self, obj=None):
+        """Delete object"""
+        if obj is not None:
+            for key, values in self.__objects.items():
+                if obj == values:
+                    break
+            self.__objects.pop(key)
+
     def close(self):
-        """ deserializes the JSON file to objects
-        """
-        self.reload()
+        """ use reload to desearialize the JSON file to objs """
+        reload()
