@@ -1,6 +1,13 @@
 #!/usr/bin/python3
 """This is the file storage class for AirBnB"""
 import json
+from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class FileStorage:
@@ -13,19 +20,34 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
+    def delete(self, obj=None):
+        """delete object from __objects
+        Args:
+            obj: given object
+        """
+        if obj is None:
+            return
+        else:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            if key in self.__objects:
+                del self.__objects[key]
+                self.save()
+
     def all(self, cls=None):
         """returns a dictionary
+        Args:
+            cls: class type to filter return by
         Return:
             returns a dictionary of __object
         """
-        if cls:
-            _dict = {}
-            for k, v in self.__objects.items():
-                if k.split('.')[0] == cls.__name__:
-                    _dict[k] = v
-            return _dict
-        else:
+        if cls is None:
             return self.__objects
+        else:
+            nx = {}
+            for key, value in self.__objects.items():
+                if type(value) == cls:
+                    nx[key] = value
+            return nx
 
     def new(self, obj):
         """sets __object to given obj
@@ -35,6 +57,12 @@ class FileStorage:
         if obj:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             self.__objects[key] = obj
+        else:
+            aux = {}
+            for key, value in self.__objects.items():
+                if isinstance(value, cls):
+                    aux[key] = value
+            return aux
 
     def save(self):
         """serialize the file path to JSON file path
@@ -53,19 +81,10 @@ class FileStorage:
                 for key, value in (json.load(f)).items():
                     value = eval(value["__class__"])(**value)
                     self.__objects[key] = value
-        except Exception:
+        except FileNotFoundError:
             pass
 
-    def delete(self, obj=None):
-        """delete obj from __objects if it’s inside
+    def close(self):
+        """ deserializes the JSON file to objects
         """
-        if obj:
-            copy = dict(self.all())
-            for k in copy.keys():
-                if k.split('.')[1] == obj.id:
-                    del self.all()[k]
-            self.save()
-
-    def reset(self):
-        """Reset all objects in __objects"""
-        self.__objects = {}
+        self.reload()
